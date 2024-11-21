@@ -1,0 +1,33 @@
+
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "No installation commands needed." 
+
+  pre_build:
+    commands:
+      - echo "Executing the PreBuild Commands"
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 872515248362.dkr.ecr.us-east-2.amazonaws.com
+
+  build:
+    commands:
+      - echo "Executing the Build Commands"
+      - docker build -t movieapp:v$CODEBUILD_BUILD_NUMBER .
+
+  post_build:
+    commands:
+      - echo "Executing the PostBuild Commands"
+      - docker tag movieapp:v$CODEBUILD_BUILD_NUMBER 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:latest
+      - docker tag movieapp:v$CODEBUILD_BUILD_NUMBER 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:v$CODEBUILD_BUILD_NUMBER
+      - echo "Executing the docker push commands"
+      - docker push 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:latest
+      - docker push 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:v$CODEBUILD_BUILD_NUMBER
+
+artifacts:
+  files:
+    - '**/*' 
+
+
+    
