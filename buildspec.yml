@@ -1,4 +1,3 @@
-
 version: 0.2
 
 phases:
@@ -9,24 +8,24 @@ phases:
   pre_build:
     commands:
       - echo "Executing the PreBuild Commands"
+      - aws sts get-caller-identity
+      - aws ecr describe-repositories --repository-names movieapp || echo "Repository does not exist"
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 872515248362.dkr.ecr.us-east-2.amazonaws.com
+      
   build:
     commands:
       - echo "Executing the Build Commands"
+      - ls -la
       - docker build -t movieapp:v$CODEBUILD_BUILD_NUMBER .
-
+      
   post_build:
     commands:
       - echo "Executing the PostBuild Commands"
       - docker tag movieapp:v$CODEBUILD_BUILD_NUMBER 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:latest
       - docker tag movieapp:v$CODEBUILD_BUILD_NUMBER 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:v$CODEBUILD_BUILD_NUMBER
-      - echo "Executing the docker push commands"
       - docker push 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:latest
       - docker push 872515248362.dkr.ecr.us-east-2.amazonaws.com/movieapp:v$CODEBUILD_BUILD_NUMBER
 
 artifacts:
   files:
-    - '**/*' 
-
-
-    
+    - '**/*'
