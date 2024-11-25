@@ -2,6 +2,7 @@
 FROM public.ecr.aws/nginx/nginx:alpine
 
 # Install Git
+
 RUN apk add --no-cache git
 
 # Remove all files from /usr/share/nginx/html
