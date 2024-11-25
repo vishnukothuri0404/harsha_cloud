@@ -1,7 +1,6 @@
 # Use the official Nginx image as the base image
 FROM public.ecr.aws/nginx/nginx:alpine
 
-
 # Install Git
 
 RUN apk add --no-cache git
